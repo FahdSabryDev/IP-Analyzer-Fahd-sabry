@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="C:\Users\EELU\Downloads\ip-address (1).png" />
+  <title>IP Analyzer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wgth@300;400;500;600;700;800,900&display=swap');
+    * {
+      font-family: 'Poppins', sans-serif;
+      padding: 3px;
+      margin: 0;
+    }
+    body {
+      background: linear-gradient(to right, #000000, #434343);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .card {
+      position: relative;
+      width: 350px;
+      height: 350px;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.5s;
+    }
+    .card:hover {
+      width: 600px;
+      transition-delay: 0.5s;
+      background: #222;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.5);
+    }
+    .card .circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card .circle::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      border: 8px solid var(--clr);
+      background: #191919;
+      transition: 0.5s, background 0.5s;
+      transition-delay: 0.75s, 1s;
+      filter: drop-shadow(0 0 10px var(--clr)) drop-shadow(0 0 60px var(--clr));
+    }
+    .card:hover .circle::before {
+      width: 100%;
+      transition-delay: 0.5s;
+      height: 100%;
+      border-radius: 20px;
+      background: var(--clr);
+    }
+    .card .circle .logo {
+      position: relative;
+      width: 250px;
+      transition: 0.5s;
+      transition-delay: 0.5s;
+    }
+    .card:hover .circle .logo {
+      transform: scale(0);
+      transition-delay: 0s;
+    }
+    .card .product_img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%) scale(0) rotate(315deg);
+      height: 300px;
+      transition: 0.5s ease-in-out;
+      color: #ffffff;
+    }
+    .card:hover .product_img {
+      transition-delay: 0.75s;
+      transform: translate(-50%,-50%) scale(1) rotate(15deg);
+      top: 45%;
+      left: 75%;
+      height: 500px;
+    }
+    .card .content {
+      position: absolute;
+      width: 50%;
+      left: 20%;
+      padding: 20px 20px 20px 40px;
+      opacity: 0;
+      transition: 0.5s;
+      visibility: hidden;
+    }
+    .card:hover .content {
+      transition-delay: 0.75s;
+      opacity: 1;
+      visibility: visible;
+      left: 0;
+    }
+    .card .content h2 {
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 2.4em;
+      line-height: 1em;
+    }
+    .card .content p {
+      color: #fff;
+    }
+    .card .content a {
+      position: relative;
+      color: #111;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 6px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+    }
+    .ip-btn {
+      width: 90px;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border-radius: 10px;
+      border: none;
+      box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.2),
+                  inset -3px -3px 7px rgba(255, 255, 255, 0.1);
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
+    .ip-btn.active {
+      background-color: #ffffff;
+      color: #192ca6;
+      transform: scale(1.05);
+    }
+    .ip-btn:hover {
+      transform: scale(1.05);
+      background-color: #ffffff;
+      color: #192ca6;
+    }
+    .button-group {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    #resultBox {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      background: white;
+      color: black;
+      padding: 12px;
+      white-space: pre-wrap;
+      text-align: left;
+      border-radius: 8px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" style="background: linear-gradient(to right, #000000, #434343);">
+    <div class="circle" style="background: linear-gradient(to right, #000000, #434343);">
+      <img src="C:\Users\EELU\Downloads\ip-address (1).png" alt="" class="logo" />
+    </div>
+    <div class="content">
+      <div class="button-group">
+        <button class="ip-btn active" id="ipv4Btn" onclick="selectMode('ipv4')">IPv4</button>
+        <button class="ip-btn" id="ipv6Btn" onclick="selectMode('ipv6')">IPv6</button>
+        <button class="ip-btn" id="myipBtn" onclick="selectMode('myip'); showMyIP()">My IP</button>
+      </div>
+      <input type="text" id="ipInput" placeholder="Enter IP address" />
+      <button onclick="analyzeIP()">Analyze</button>
+      <div id="resultBox"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = "ipv4";
+
+    function selectMode(mode) {
+      currentMode = mode;
+      document.getElementById("ipv4Btn").classList.toggle("active", mode === "ipv4");
+      document.getElementById("ipv6Btn").classList.toggle("active", mode === "ipv6");
+      document.getElementById("myipBtn").classList.toggle("active", mode === "myip");
+
+      document.getElementById("resultBox").innerText = "";
+      document.getElementById("ipInput").value = "";
+    }
+
+    async function analyzeIP() {
+      const ip = document.getElementById("ipInput").value.trim();
+      if (!ip && currentMode !== "myip") {
+        document.getElementById("resultBox").innerText = "من فضلك أدخل عنوان IP";
+        return;
+      }
+
+      if (currentMode === "ipv4") {
+        showIPv4Info(ip, "resultBox");
+      } else if (currentMode === "ipv6") {
+        showIPv6Info(ip, "resultBox");
+      } else if (currentMode === "myip") {
+        try {
+          const res = await fetch("https://ipapi.co/json/");
+          const data = await res.json();
+          const ipToShow = data.ip;
+          const info = `Your IP: ${ipToShow}
+Version: ${data.version}
+City: ${data.city}
+Region: ${data.region}
+Country: ${data.country_name} (${data.country})
+Postal Code: ${data.postal}
+Timezone: ${data.timezone}
+ISP: ${data.org}
+Latitude: ${data.latitude}
+Longitude: ${data.longitude}`;
+          document.getElementById("resultBox").innerText = info;
+        } catch {
+          document.getElementById("resultBox").innerText = "حدث خطأ أثناء جلب بيانات IP.";
+        }
+      }
+    }
+
+    function showIPv4Info(ip, boxId) {
+      const resultBox = document.getElementById(boxId);
+      const octets = ip.split(".");
+      if (octets.length !== 4 || octets.some(o => isNaN(o) || o < 0 || o > 255)) {
+        resultBox.innerText = "Invalid IPv4 address";
+        return;
+      }
+
+      const firstOctet = parseInt(octets[0]);
+      let ipClass = "", subnet = "", network = "", hosts = "", networks = "";
+
+      if (firstOctet <= 127) {
+        ipClass = "Class A";
+        subnet = "255.0.0.0";
+        network = `${octets[0]}.0.0.0`;
+        hosts = "16,777,214";
+        networks = "128";
+      } else if (firstOctet <= 191) {
+        ipClass = "Class B";
+        subnet = "255.255.0.0";
+        network = `${octets[0]}.${octets[1]}.0.0`;
+        hosts = "65,534";
+        networks = "16,384";
+      } else if (firstOctet <= 223) {
+        ipClass = "Class C";
+        subnet = "255.255.255.0";
+        network = `${octets[0]}.${octets[1]}.${octets[2]}.0`;
+        hosts = "254";
+        networks = "2,097,152";
+      } else {
+        ipClass = "Class D/E";
+        subnet = "N/A";
+        network = "N/A";
+        hosts = "N/A";
+        networks = "N/A";
+      }
+
+      const binary = octets.map(o => parseInt(o).toString(2).padStart(8, "0")).join(".");
+      resultBox.innerText = `IPv4 Address: ${ip}
+Binary: ${binary}
+Class: ${ipClass}
+Subnet Mask: ${subnet}
+Network Address: ${network}
+Number of Hosts: ${hosts}
+Number of Networks: ${networks}`;
+    }
+
+    function expandIPv6(ipv6) {
+      const parts = ipv6.split("::");
+      if (parts.length > 2) throw new Error("Invalid IPv6");
+      let left = parts[0] ? parts[0].split(":") : [];
+      let right = parts[1] ? parts[1].split(":") : [];
+      let middle = Array(8 - left.length - right.length).fill("0");
+      return [...left, ...middle, ...right].map(p => p.padStart(4, "0")).join(":");
+    }
+
+    function ipv6ToBinary(ipv6) {
+      const full = expandIPv6(ipv6);
+      return full.split(":").map(h => parseInt(h, 16).toString(2).padStart(16, "0")).join(" ");
+    }
+
+    function getIPv6Type(ipv6) {
+      const firstBlock = expandIPv6(ipv6).split(":")[0];
+      const first = parseInt(firstBlock, 16);
+      if ((first & 0xfe00) === 0xfc00) return "Unique Local";
+      if ((first & 0xffc0) === 0xfe80) return "Link Local";
+      if (first === 0) return "Unspecified";
+      if ((first & 0xe000) === 0x2000) return "Global Unicast";
+      return "Unknown";
+    }
+
+    function compressIPv6(ipv6) {
+      return ipv6.replace(/(^|:)0+(?=\w)/g, "$1").replace(/(:0{1,4}){2,}/, "::");
+    }
+
+    function showIPv6Info(ip, boxId) {
+      const resultBox = document.getElementById(boxId);
+      if (!ip.includes(":")) {
+        resultBox.innerText = "Invalid IPv6 address. IPv4 or other formats are not allowed.";
+        return;
+      }
+      try {
+        const expanded = expandIPv6(ip);
+        const compressed = compressIPv6(expanded);
+        const binary = ipv6ToBinary(ip);
+        const type = getIPv6Type(ip);
+
+        resultBox.innerText = `IPv6 Address: ${ip}
+Expanded: ${expanded}
+Compressed: ${compressed}
+Type: ${type}
+Binary: ${binary}`;
+      } catch {
+        resultBox.innerText = "Invalid IPv6 address";
+      }
+    }
+
+    async function showMyIP() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+
+        let ipToShow = "";
+        if (currentMode === "ipv4") {
+          ipToShow = data.ip;
+        } else {
+          ipToShow = data.ipv6 || "";
+        }
+
+        document.getElementById("ipInput").value = ipToShow;
+        document.getElementById("resultBox").innerText = "";
+      } catch {
+        document.getElementById("resultBox").innerText = "Something went wrong while fetching your IP info.";
+      }
+    }
+  </script>
+</body>
+</html>
